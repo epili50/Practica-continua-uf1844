@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Add New Image</title>
+    <%- include('./partials/head') %>
+    <script defer src="form.js"></script>
+
+   
+</head>
+
+<body>
+    <header class="container">
+        <%-  include('./partials/nav') %>
+    </header>
+    <form class="container" action="/add-image-form" method="post">
+        <label for="title">Nombre</label>
+        <input type="text" name="title" id="title" maxlength="30" pattern="[A-Za-z0-9_]{1,30}" required>
+        <label for="url_photo">Introduce una URL:</label>
+        <input type="url" id="url_photo" name="url_photo" required>
+        <label for="photo_date">Fecha de la foto:</label>
+        <input type="date" id="photo_date" name="photo_date" required>
+        <input type="submit" value="Añadir">
+    </form>
+    <!-- Mostrar un mensaje de confirmación si el usuario acaba de isertar una imagen en la 'base de datos'-->
+    <% if (isImagesPosted) { %>
+        <div id="message" class="container alert success">Imagen insertada correctamente</div>
+        <% } %>
+</body>
+
+</html>

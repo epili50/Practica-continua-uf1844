@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Fototeca IronHack 2024</title>
+    <%- include('./partials/head') %></head>
+
+<body>
+    <header class="container">
+        <%-  include('./partials/nav') %>
+    </header>
+        <main class="conteiner">
+            <section class="grid">
+                <% for (const image of images) { %> 
+                    <article> 
+                        <%= image.title %> 
+                    </article>
+                    
+                <% } %>
+                
+                
+            </section>
+
+        </main>
+       
+    
+</body>
+
+</html>
