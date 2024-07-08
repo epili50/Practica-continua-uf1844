@@ -15,7 +15,7 @@
     </header>
     <form class="container" action="/add-image-form" method="post">
         <label for="title">Nombre</label>
-        <input type="text" name="title" id="title" maxlength="30" pattern="[A-Za-z0-9_]{1,30}" required>
+        <input type="text" name="title" id="title" maxlength="30" pattern="[A-Za-zÀ-ÖØ-öø-ÿ0-9]+(?: [A-Za-zÀ-ÖØ-öø-ÿ0-9]+)*" required>
         <label for="url_photo">Introduce una URL:</label>
         <input type="url" id="url_photo" name="url_photo" required>
         <label for="photo_date">Fecha de la foto:</label>

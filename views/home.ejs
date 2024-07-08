@@ -3,29 +3,34 @@
 
 <head>
     <title>Fototeca IronHack 2024</title>
-    <%- include('./partials/head') %></head>
+    <%- include('./partials/head') %>
+</head>
 
 <body>
     <header class="container">
-        <%-  include('./partials/nav') %>
+        <%- include('./partials/nav') %>
     </header>
-        <main class="conteiner">
-            <section class="grid">
-                <% for (const image of images) { %> 
-                    <article> 
-                        <img src="<%= image.url_photo %>" alt="<%= image.title %>" width="100%"><br>
-                            <br>
-                        <%= image.photo_date %>  
-                    </article>
-                    
-                <% } %>
-                
-                
-            </section>
+    <main class="conteiner">
+        <section class="grid">
+            <% for (const image of images) { %>
+                <div>
+                    <header>
+                        <%= image.title.toUpperCase() %>
+                    </header>
+                    <img src="<%= image.url_photo %>" alt="<%= image.title %>" width="100%">
+                    <br>
+                    <%= image.photo_date %>
+                </div>
 
-        </main>
-       
-    
+
+                <% } %>
+
+
+        </section>
+
+    </main>
+
+
 </body>
 
 </html>
