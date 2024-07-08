@@ -42,24 +42,25 @@ app.get('/add-image-form', (req, res) => {
 // Cuando nos hagan una petición POST a '/add-image-form' tenemos que recibir los datos del formulario y actualizar nuestra "base de datos"
 app.post('/add-image-form', (req, res) => {
     // todos los datos vienen en req.body
-    console.log(req.body);
+    // console.log(req.body);
 
     // 1. Actualizar el array 'images' con la información de req.body
     const { title, url_photo, date_photo } = req.body;
-    const isUrlInArray = images.some(u => images.url_photo == date_photo)
+    const isUrlInArray = images.some(u => u.url_photo == url_photo)
+    console.log('variable is in...', isUrlInArray);
     if(isUrlInArray){
         console.log('ya esta repetido');
     }else{
         images.push(req.body)
-    }
     
-    console.log(images);
-
+        
     // 3. Añadir los otros campos del formulario y sus validaciones 
     // res.send('Datos recibidos');
     res.render('form', {
         isImagesPosted: true
     });
+    }
+    console.log(images);
 });
 
 // en el futuro es normal que tengamos endpoints como

@@ -13,7 +13,9 @@
             <section class="grid">
                 <% for (const image of images) { %> 
                     <article> 
-                        <%= image.title %> 
+                        <img src="<%= image.url_photo %>" alt="<%= image.title %>" width="100%"><br>
+                            <br>
+                        <%= image.photo_date %>  
                     </article>
                     
                 <% } %>
