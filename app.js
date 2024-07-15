@@ -17,6 +17,9 @@ app.use(express.static('public'));
 //crear un id para las fotos
 let id = 1;
 
+//Variable para indicar en que puerte tiene que escuchar nuestra app
+const PORT = process.env.PORT || 3000;
+
 // Base de datos de imágenes
 const images = [];
 
@@ -125,6 +128,6 @@ app.get('/search', (req, res) => {
 });
 
 
-app.listen(3000, (req, res) => {
-    console.log("Servidor escuchando correctamente en el puerto 3000.")
+app.listen(PORT, (req, res) => {
+    console.log("Servidor escuchando correctamente en el puerto ", PORT)
 });
