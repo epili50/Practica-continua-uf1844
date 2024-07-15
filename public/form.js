@@ -5,4 +5,3 @@ if (message) {
         event.target.style.display = 'none';
     })
 }
-console.log('hola');

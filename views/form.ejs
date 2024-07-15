@@ -13,6 +13,7 @@
     <header class="container">
         <%-  include('./partials/nav') %>
     </header>
+   
     <form class="container" action="/add-image-form" method="post">
         <label for="title">Nombre</label>
         <input type="text" name="title" id="title" maxlength="30" pattern="[A-Za-zÀ-ÖØ-öø-ÿ0-9]+(?: [A-Za-zÀ-ÖØ-öø-ÿ0-9]+)*" required>
@@ -25,6 +26,11 @@
     <!-- Mostrar un mensaje de confirmación si el usuario acaba de isertar una imagen en la 'base de datos'-->
     <% if (isImagesPosted) { %>
         <div id="message" class="container alert success">Imagen insertada correctamente</div>
+        <% } %>
+
+    <!-- Crear aviso de que la fota ya esta en la base de datos -->
+    <% if (isImageRepeat) { %>
+        <div id="message" class="container alert failed">La imagen ya está en la base de datos</div>
         <% } %>
 </body>
 

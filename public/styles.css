@@ -1,3 +1,7 @@
+.conteiner{
+    margin: 1rem;
+}
+
 .alert {
     padding: 20px;
     color: white;
@@ -11,3 +15,48 @@
     background-color: #04AA6D;
 }
 
+.alert.failed {
+    background-color: red
+}
+
+.search-form {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.search-form>input {
+    margin-bottom: 0;
+}
+
+.photo-box{
+    text-align: center;
+}
+
+.square{
+    width: 200px;
+    height: 200px;
+   color: white
+}
+
+.gallery {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+@media (min-width: 760px) {
+    .gallery {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+
+    .gallery__item img {
+        aspect-ratio: 1/1;
+        width: 100%;
+        object-fit: cover;
+        /* Escala y recorta la imagen para llenar el contenedor */
+    }
+
+
+}
