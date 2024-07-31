@@ -129,5 +129,5 @@ app.get('/search', (req, res) => {
 
 
 app.listen(PORT, (req, res) => {
-    console.log("Servidor escuchando correctamente en el puerto ", PORT)
+    console.log("Servidor escuchando correctamente en el puerto ", PORT             )
 });
