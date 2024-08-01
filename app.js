@@ -2,6 +2,7 @@
 const { log } = require('console');
 const express = require('express');
 const morgan = require('morgan');
+const { MongoClient, ServerApiVersion } = require('mongodb');
 const { getColorFromURL } = require('color-thief-node');
 
 
@@ -20,6 +21,20 @@ let id = 1;
 //Variable para indicar en que puerte tiene que escuchar nuestra app
 const PORT = process.env.PORT || 3000;
 
+//Conexión a BBDD de MongoDB
+const uri = "mongodb+srv://epili50:epili50@cluster0.uimmq6n.mongodb.net/";
+const client = new MongoClient(uri, {
+    serverApi: {
+        version: ServerApiVersion.v1,
+        strict: true,
+        deprecationErrors: true,
+    }
+}
+);
+
+// variable global para gestionar nuestra base de datos
+let database;
+
 // Base de datos de imágenes
 const images = [];
 
@@ -30,10 +45,23 @@ app.set('view engine', 'ejs');
 app.use(morgan('tiny'));
 
 // Cuando nos hagan una petición GET a '/' renderizamos la home.ejs
-app.get('/', (req, res) => {
+app.get('/', async (req, res) => {
+    //query a la BBDD para buscar las imagenes
+    // const documents = database.collection('images');
 
-    
+    const query = {};
 
+    const options = {sort: {photo_date: -1}};
+
+    const imagesRaw = await database.collection('images').find(query, options).toArray();
+
+    // Formatear las fechas en los documentos
+    const images = imagesRaw.map(image => {
+         const date = new Date(image.photo_date);
+         image.photo_date = date.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
+         return image;
+    });
+ 
     // 2. Usar en el home.ejs el forEach para iterar por todas las imágenes de la variable 'images'. Mostrar de momento solo el título 
     res.render('home', {
         images
@@ -63,9 +91,11 @@ app.post('/add-image-form', async (req, res) => {
 
     // 1. Actualizar el array 'images' con la información de req.body
     const { title, url_photo, photo_date} = req.body;
+    console.log("🚀 ~ app.post ~ url_photo:", url_photo)
 
     //control para que no se repitan las url
-    const isUrlInArray = images.some(u => u.url_photo == url_photo)
+    const isUrlInArray = await database.collection('images').findOne({url_photo: url_photo}) !== null;
+    //const isUrlInArray = images.some(u => u.url_photo == url_photo)
 
     //función para encontrar el color
     const dominateColor = await getColor(url_photo)
@@ -77,14 +107,16 @@ app.post('/add-image-form', async (req, res) => {
             isImagesPosted: false
         });
     } else {
-        images.push({
-            ...req.body,
+        database.collection('images').insertOne({
+            title,
+            photo_date: new Date(photo_date),
+            url_photo,
             dominateColor,
-            id: id++
+           
         })
 
         //Ordeno las fotos de más nueva a más vieja
-    images.sort((a , b) => new Date(b.photo_date) - new Date (a.photo_date))
+    // images.sort((a , b) => new Date(b.photo_date) - new Date (a.photo_date))
 
 
 
@@ -128,6 +160,18 @@ app.get('/search', (req, res) => {
 });
 
 
-app.listen(PORT, (req, res) => {
-    console.log("Servidor escuchando correctamente en el puerto ", PORT             )
+app.listen(PORT, async (req, res) => {
+    console.log("Servidor escuchando correctamente en el puerto ", PORT);
+
+    //Conexión a BBDD mongoDB al conectar el servidor
+    try{
+        await client.connect();
+        //seleccionamos nuestra bbdd
+        database = client.db('ironhack')
+        // Mensaje de confirmación de que nos hemos conectado a la base de datos
+        console.log("Conexión a la base de datos OK.")
+
+    }catch(err){
+        console.error(err);
+    }
 });
