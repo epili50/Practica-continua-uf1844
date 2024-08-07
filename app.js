@@ -2,8 +2,61 @@
 const { log } = require('console');
 const express = require('express');
 const morgan = require('morgan');
+const mongoose = require('mongoose')
 const { getColorFromURL } = require('color-thief-node');
+const { type } = require('os');
 
+
+//Conectar a la base de datos utilizando mongoose 
+main().catch(err => console.log(err));
+
+// Variable global para almacenar el modelo
+let Image;
+
+async function main() {
+    await mongoose.connect('mongodb+srv://epili50:epili50@cluster0.uimmq6n.mongodb.net/ironhackDB')
+
+    const imageSchema = new mongoose.Schema({
+        title:{
+            type: String,
+            required: true,
+            trim: true,
+            maxlength: 30
+        },
+        url_photo:{
+            type: String,
+            required: true,
+            match: /^https?:\/\/[^\s$.?#].[^\s]*$/
+        },
+        photo_date:{
+            type: Date,
+            required: true,
+            match: /^\d{4}-\d{2}-\d{2}$/
+        },
+        dominateColor:{
+            type: String,
+            required: true,
+            match: /^rgb\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3})\)$/
+        }
+
+    })
+
+    //Relacionar schema con el model
+    Image = mongoose.model('images_Mongoose', imageSchema);
+
+//     //creación de una foto de prueba
+
+//     const image = new Image({
+//         title: 'aa',
+//         url_photo: "https://picsum.photos/id/16/2500/1667",
+//         photo_date: new Date ('1981-09-24'),
+//         dominateColor: "rgb(134, 173, 187)"
+//     })
+
+//     await image.save()
+    console.log('conectado y funcionando el esquema');
+    
+}
 
 // creamos una instancia del servidor Express
 const app = express();
@@ -30,10 +83,10 @@ app.set('view engine', 'ejs');
 app.use(morgan('tiny'));
 
 // Cuando nos hagan una petición GET a '/' renderizamos la home.ejs
-app.get('/', (req, res) => {
+app.get('/', async (req, res) => {
 
     
-
+    const images = await Image.find().sort({photo_date: -1});
     // 2. Usar en el home.ejs el forEach para iterar por todas las imágenes de la variable 'images'. Mostrar de momento solo el título 
     res.render('home', {
         images
@@ -77,11 +130,14 @@ app.post('/add-image-form', async (req, res) => {
             isImagesPosted: false
         });
     } else {
-        images.push({
-            ...req.body,
-            dominateColor,
-            id: id++
-        })
+        const image = new Image({
+                    title,
+                    url_photo,
+                    photo_date: new Date (photo_date),
+                    dominateColor
+                })
+        await image.save()
+
 
         //Ordeno las fotos de más nueva a más vieja
     images.sort((a , b) => new Date(b.photo_date) - new Date (a.photo_date))
