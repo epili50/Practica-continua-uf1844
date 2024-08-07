@@ -134,16 +134,19 @@ app.post('/add-image-form', async (req, res) => {
 // app.get('/edit-image-form')
 
 // Creamos un nuevo endpoint para gestionar la búsqueda 
-app.get('/search', (req, res) => {
+app.get('/search', async (req, res) => {
     // Vamos a recibir algo con esta estructura http://localhost:3000/search?keyword=cat
 
     // 1. Coger el el valor del parámetro keyword de la query string (cat)
     // TODO 
 
     const searchWord = req.query.keyword;
+    const regex = new RegExp(searchWord, 'i')
 
     // 2. Usar el método filter para filtrar el array de images por el valor de (cat)
-    const filteredImages = images.filter(w => w.title.toLowerCase().includes(searchWord.toLocaleLowerCase())); // TODO
+    const filteredImages = await database.collection('images').find({title: regex}).toArray();
+    // images.filter(w => w.title.toLowerCase().includes(searchWord.toLocaleLowerCase())); // TODO
+    console.log("🚀 ~ app.get ~ filteredImages:", filteredImages)
 
     // Tema mayúsuclas-minúsuclas: dos opciones
     // 1. Pasarlo todo a mínusculas con toLowerCase
