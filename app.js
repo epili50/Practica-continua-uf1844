@@ -86,7 +86,17 @@ app.use(morgan('tiny'));
 app.get('/', async (req, res) => {
 
     
-    const images = await Image.find().sort({photo_date: -1});
+    const imagesRaw = await Image.find().sort({photo_date: -1});
+
+    // Formatear las fechas en los documentos
+    const images = imagesRaw.map(image => {
+        const date = new Date(image.photo_date);
+        const formattedDate = date.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
+        return {
+            ...image.toObject(),
+            photo_date: formattedDate
+        };
+    });
     // 2. Usar en el home.ejs el forEach para iterar por todas las imágenes de la variable 'images'. Mostrar de momento solo el título 
     res.render('home', {
         images
@@ -118,7 +128,7 @@ app.post('/add-image-form', async (req, res) => {
     const { title, url_photo, photo_date} = req.body;
 
     //control para que no se repitan las url
-    const isUrlInArray = images.some(u => u.url_photo == url_photo)
+    const isUrlInArray = await Image.findOne({url_photo: url_photo}) !== null;
 
     //función para encontrar el color
     const dominateColor = await getColor(url_photo)
